@@ -496,7 +496,6 @@ var Popover = function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
-      console.log(this);
       var _props = this.props,
           _props$className = _props.className,
           className = _props$className === undefined ? "" : _props$className,
