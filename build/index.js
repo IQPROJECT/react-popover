@@ -298,17 +298,21 @@ var Popover = function (_React$Component) {
       width`/`height` will be impacted. Our layout monitoring will catch these cases and automatically
       recalculate layout. */
 
-      this.containerEl.style.flexFlow = zone.flow;
-      this.containerEl.style[jsprefix("FlexFlow")] = this.containerEl.style.flexFlow;
-      this.bodyEl.style.order = zone.order;
-      this.bodyEl.style[jsprefix("Order")] = this.bodyEl.style.order;
-
+      if (this.containerEl) {
+        this.containerEl.style.flexFlow = zone.flow;
+        this.containerEl.style[jsprefix("FlexFlow")] = this.containerEl.style.flexFlow;
+      }
+      if (this.bodyEl) {
+        this.bodyEl.style.order = zone.order;
+        this.bodyEl.style[jsprefix("Order")] = this.bodyEl.style.order;
+      }
       /* Apply Absolute Positioning. */
 
       log("pos", pos);
-      this.containerEl.style.top = pos.y + "px";
-      this.containerEl.style.left = pos.x + "px";
-
+      if (this.containerEl) {
+        this.containerEl.style.top = pos.y + "px";
+        this.containerEl.style.left = pos.x + "px";
+      }
       /* Calculate Tip Position */
 
       var tipCrossPos =
@@ -329,8 +333,10 @@ var Popover = function (_React$Component) {
         tipCrossPos = pos.crossLength - dockingEdgeBufferLength - this.props.tipSize * 2;
       }
 
-      this.tipEl.style.transform = flowToTipTranslations[zone.flow] + "(" + tipCrossPos + "px)";
-      this.tipEl.style[jsprefix("Transform")] = this.tipEl.style.transform;
+      if (this.tipEl) {
+        this.tipEl.style.transform = flowToTipTranslations[zone.flow] + "(" + tipCrossPos + "px)";
+        this.tipEl.style[jsprefix("Transform")] = this.tipEl.style.transform;
+      }
     }
   }, {
     key: "measurePopoverSize",
@@ -390,8 +396,10 @@ var Popover = function (_React$Component) {
       this.setState({ exiting: true });
       this.exitingAnimationTimer2 = setTimeout(function () {
         setTimeout(function () {
-          _this2.containerEl.style.transform = flowToPopoverTranslations[_this2.zone.flow] + "(" + _this2.zone.order * 50 + "px)";
-          _this2.containerEl.style.opacity = "0";
+          if (_this2.containerEl) {
+            _this2.containerEl.style.transform = flowToPopoverTranslations[_this2.zone.flow] + "(" + _this2.zone.order * 50 + "px)";
+            _this2.containerEl.style.opacity = "0";
+          }
         }, 0);
       }, 0);
 
@@ -403,26 +411,27 @@ var Popover = function (_React$Component) {
     key: "animateEnter",
     value: function animateEnter() {
       /* Prepare `entering` style so that we can then animate it toward `entered`. */
+      if (this.containerEl) {
+        this.containerEl.style.transform = flowToPopoverTranslations[this.zone.flow] + "(" + this.zone.order * 50 + "px)";
+        this.containerEl.style[jsprefix("Transform")] = this.containerEl.style.transform;
+        this.containerEl.style.opacity = "0";
 
-      this.containerEl.style.transform = flowToPopoverTranslations[this.zone.flow] + "(" + this.zone.order * 50 + "px)";
-      this.containerEl.style[jsprefix("Transform")] = this.containerEl.style.transform;
-      this.containerEl.style.opacity = "0";
+        /* After initial layout apply transition animations. */
+        /* Hack: http://stackoverflow.com/questions/3485365/how-can-i-force-webkit-to-redraw-repaint-to-propagate-style-changes */
+        this.containerEl.offsetHeight;
 
-      /* After initial layout apply transition animations. */
-      /* Hack: http://stackoverflow.com/questions/3485365/how-can-i-force-webkit-to-redraw-repaint-to-propagate-style-changes */
-      this.containerEl.offsetHeight;
-
-      /* If enterExitTransitionDurationMs is falsy, tip animation should be also disabled */
-      if (this.props.enterExitTransitionDurationMs) {
-        this.tipEl.style.transition = "transform 150ms ease-in";
-        this.tipEl.style[jsprefix("Transition")] = cssprefix("transform") + " 150ms ease-in";
+        /* If enterExitTransitionDurationMs is falsy, tip animation should be also disabled */
+        if (this.props.enterExitTransitionDurationMs) {
+          this.tipEl.style.transition = "transform 150ms ease-in";
+          this.tipEl.style[jsprefix("Transition")] = cssprefix("transform") + " 150ms ease-in";
+        }
+        this.containerEl.style.transitionProperty = "top, left, opacity, transform";
+        this.containerEl.style.transitionDuration = this.props.enterExitTransitionDurationMs + "ms";
+        this.containerEl.style.transitionTimingFunction = "cubic-bezier(0.230, 1.000, 0.320, 1.000)";
+        this.containerEl.style.opacity = "1";
+        this.containerEl.style.transform = "translateY(0)";
+        this.containerEl.style[jsprefix("Transform")] = this.containerEl.style.transform;
       }
-      this.containerEl.style.transitionProperty = "top, left, opacity, transform";
-      this.containerEl.style.transitionDuration = this.props.enterExitTransitionDurationMs + "ms";
-      this.containerEl.style.transitionTimingFunction = "cubic-bezier(0.230, 1.000, 0.320, 1.000)";
-      this.containerEl.style.opacity = "1";
-      this.containerEl.style.transform = "translateY(0)";
-      this.containerEl.style[jsprefix("Transform")] = this.containerEl.style.transform;
     }
   }, {
     key: "trackPopover",
